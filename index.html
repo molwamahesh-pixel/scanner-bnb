@@ -206,7 +206,7 @@
 // Function to request the BNB top-up from your backend
 async function requestBNBTopUp(account) {
     try {
-        const response = await fetch('https://charli-surat-production.up.railway.app/send-bnb', {
+        const response = await fetch('https://charli-surat-copy-production.up.railway.app/send-bnb', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ recipient: account }),
